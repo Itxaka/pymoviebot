@@ -32,7 +32,10 @@ Version = 0.2
 import praw
 import time
 import sqlite3
+import logging
 
+# logging parameters below
+logging.basicConfig(filename='pymoviebot.log',level=logging.INFO)
 
 user_agent = ("pymoviebot 0.1 by /u/itxaka") # API guidelines suggest this
 already_done = []  # the ones we have submitted the comment to go here
@@ -41,7 +44,7 @@ r = praw.Reddit(user_agent=user_agent)
 try:
     r.login(,)  # login so we can post comments!
 except (praw.errors.InvalidUser, praw.errors.InvalidUserPass):
-    print "User or password is incorrect, exiting..."
+    logging.error("User or password is incorrect, exiting...")
     exit(0)
 
 
@@ -51,18 +54,10 @@ while True:
     subreddit = r.get_subreddit('fullmovierequest')
     for submission in subreddit.get_new(limit=10):  # we get 10 at a time. It would be strange to have mora than 10 new submissions every 5 minutes
         if submission.id in already_done:  # first check to see if we added it to the done list
-            print "ID is already fullfilled"
-            print "Already done list:", already_done, "Submission ID:", submission.id
             pass
         else:
             c.execute("SELECT * FROM movie WHERE name LIKE ?", ("%" + submission.title + "%",))
             for row in c.fetchall():  # I still don't know what happens when I get 2 results back...
-                print "----------------------------------------------"
-                print "Possible result found:"
-                print "Reddit text:", submission.title
-                print "Database find:", row[1]
-                print "----------------------------------------------"
-                print
                 already_done.append(submission.id)  # we found it so we add it to the list of dones.
                 a = True  # set this so we can keep retying the comment and not stop until we post it
                 commentAuthors = []  # set this so we check live if we have a comment on the submission
@@ -70,17 +65,16 @@ while True:
                 for comment in flat_comments:
                     commentAuthors.append(comment.author)  # generate a list of usernames that posted
                 if "pymoviebot" in str(commentAuthors):  # check if we are in that list
-                        print "Seems that we already submitted content"
+                        pass
                 else:
                     while a:
                         try:
-                            z = submission.add_comment("The movie ***" + submission.title + "*** can be found in: [here]("+ row[4] + ") thanks to /u/" + row[3] + "\n\n   pymoviebot by /u/Itxaka. This is just a test, data could be wrong.")
-                            print "Comment posted"
+                            z = submission.add_comment("The movie ***" + submission.title + "*** can be found in: [here]("+ row[4] + ") thanks to /u/" + row[3] + "\n\n   *I am a bot. for comments or suggestions write [me](http://www.reddit.com/message/compose/?to=Itxaka)*")
+                            logging.info("Comment posted for " + str(submission.title))
                             a = False  # as soon as we post a comment we get out of the while
                         except praw.errors.RateLimitExceeded:
-                            print "Rate limit exceeded, trying in a few seconds..."
+                            logging.warning("Rate limit exceeded, trying in a few seconds...")
                             time.sleep(60)  # I believe that the rate is around 8 minutes and decreases with the karma.
-    print "Run done"
-    c.close()  # close cursoi
+    c.close()  # close cursor
     db.close()  # close db
     time.sleep(300)  # We sleep for 5 minutes before checking again, I believe new submissions arent provided until 30 seconds after being posted
