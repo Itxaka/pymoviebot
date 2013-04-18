@@ -24,7 +24,7 @@ This code works in conjuntion with pymoviebot.py
 Version = 0.2
 
 # TODO: Try/catch if reddit is down or there is no connection
-# TODO: logging so we don't print anything to the screen
+# DONE! logging so we don't print anything to the screen
 # TODO: Catch database UNIQUE violation in case an id is duplicated
 # TODO: Fix the count at the end. Even if it doesn't insert anything, the numbers don't match. Dont know why.
 
