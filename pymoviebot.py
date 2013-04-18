@@ -71,6 +71,14 @@ while True:
                     while a:
                         try:
                             z = submission.add_comment("The movie ***" + submission.title + "*** can be found in: [here]("+ row[4] + ") thanks to /u/" + row[3] + "\n\n   *I am a bot. for comments or suggestions write [me](http://www.reddit.com/message/compose/?to=Itxaka)*")
+                            # Set up the flair
+                            submission_to_flair = r.get_submission(submission_id=submission.id)
+                            if row[5] == "fullmoviesonvimeo":
+                                subreddit.set_flair(submission_to_flair,"View on Vimeo", "vimeo")
+                                logging.info("Flair Vimeo set for: " + str(submission.title))
+                            else:
+                                subreddit.set_flair(submission_to_flair,"View on YouTube", "youtube")
+                                logging.info("Flair Youtube set for: " + str(submission.title))
                             logging.info("Comment posted for " + str(submission.title))
                             a = False  # as soon as we post a comment we get out of the while
                         except praw.errors.RateLimitExceeded:
