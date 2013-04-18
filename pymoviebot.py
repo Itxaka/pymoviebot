@@ -35,8 +35,7 @@ import sqlite3
 import logging
 
 # logging parameters below
-logFormat='%(asctime)s - %(message)s'
-logging.basicConfig(filename='pymoviebot.log',level=logging.INFO, format=format)
+logging.basicConfig(filename='pymovielog.log',level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 logging.info("Program Start")
 
 user_agent = ("pymoviebot 0.1 by /u/itxaka") # API guidelines suggest this
