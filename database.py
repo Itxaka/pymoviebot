@@ -35,7 +35,7 @@ import logging
 
 # logging parameters below
 logFormat='%(asctime)s - %(message)s'
-logging.basicConfig(filename='database.log',level=logging.INFO, format=format, datefmt='%d/%m/%Y %I:%M:%S %p')
+logging.basicConfig(filename='database.log',level=logging.INFO, format=format)
 logging.info("Program Start")
 
 user_agent = ("pymoviebot 0.1 by /u/itxaka")  # API guidelines enforce this
