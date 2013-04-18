@@ -30,6 +30,13 @@ Version = 0.2
 
 import praw
 import sqlite3
+import logging
+
+
+# logging parameters below
+logFormat='%(asctime)s - %(message)s'
+logging.basicConfig(filename='database.log',level=logging.INFO, format=format, datefmt='%d/%m/%Y %I:%M:%S %p')
+logging.info("Program Start")
 
 user_agent = ("pymoviebot 0.1 by /u/itxaka")  # API guidelines enforce this
 count = 0
@@ -48,7 +55,6 @@ for submission in subreddit.get_new(limit=1000):
     else:
         # use str() for the author as it won't work any other way
         c.execute('INSERT INTO movie VALUES(?,?,?,?,?,?)', (submission.id,submission.title, submission.url, str(submission.author), submission.permalink, "fullmoviesonvimeo"))
-        print "Inserting:", submission.id, submission.title
         db.commit()
 
 subreddit = r.get_subreddit('fullmoviesonyoutube')
@@ -59,7 +65,6 @@ for submission in subreddit.get_new(limit=1000):
     else:
         # use str() for the author as it won't work any other way
         c.execute('INSERT INTO movie VALUES(?,?,?,?,?,?)', (submission.id,submission.title, submission.url, str(submission.author), submission.permalink, "fullmoviesonyoutube"))
-        print "Inserting:", submission.id, submission.title
         db.commit()
 
 # we will execute a little check in order to see if we found new items
@@ -67,12 +72,12 @@ c.execute("SELECT COUNT(*) FROM movie")
 controlCheck = c.fetchone()[0]
 
 if controlCheck == count:
-    print "Database is up to date"
+    logging.info("Database is up to date")
 else:
-    print "Database was updated"
-    print "There was ", count, "items before. There is", controlCheck, "items now."
+    logging.info("Database was updated")
+    logging.info("There was " + str(count) + " items before. There is " + str(controlCheck) + " items now.")
 
 # Don't forget to close the database (¬_¬)
 c.close()
 db.close()
-
+logging.info("Program End")

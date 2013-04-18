@@ -23,7 +23,7 @@ This code works in conjuntion with database.py
 
 Version = 0.2
 
-# TODO: Add logging so it can provide feedback
+# DONE! Add logging so it can provide feedback
 # DONE! Put it in a loop so it runs indefinitly? Not sure if we want that and a time.sleep() or we rather launch it every X minutes like with cron
 # TODO: Try/except in case reddit is down
 # TODO: Check what happens if I get back 2 results when searching for a movie. Maybe I get a normal and HD version and all hell breaks loose?
@@ -35,7 +35,9 @@ import sqlite3
 import logging
 
 # logging parameters below
-logging.basicConfig(filename='pymoviebot.log',level=logging.INFO)
+logFormat='%(asctime)s - %(message)s'
+logging.basicConfig(filename='pymoviebot.log',level=logging.INFO, format=format, datefmt='%d/%m/%Y %I:%M:%S %p')
+logging.info("Program Start")
 
 user_agent = ("pymoviebot 0.1 by /u/itxaka") # API guidelines suggest this
 already_done = []  # the ones we have submitted the comment to go here
@@ -78,3 +80,5 @@ while True:
     c.close()  # close cursor
     db.close()  # close db
     time.sleep(300)  # We sleep for 5 minutes before checking again, I believe new submissions arent provided until 30 seconds after being posted
+
+logging.info("Program End")
