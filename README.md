@@ -35,11 +35,11 @@ both subreddits everytime there is a new request.
 pymoviebot.py will check the request subreddit every 5 minutes and get the 10 newests post. Then it will check if they 
 are already fulfilled and commented by itself and if not, check and post if there is any coincidence in the database.
 
+It will also flair the post automatically with the proper flair.
 
 TODOs
 ------
 
-Add logging so it can be run and get get some output of what is going on.
-Use more try/Except to catch more exceptions, in case reddit is down for example.
-Check what happens if the search answers 2 rows of data, like a movie and his HD counterpart. Im guessing nothing happens,
-it tries to post the links again but the bot check that he has commented already so it ignores it.
+* Use more try/Except to catch more exceptions, in case reddit is down for example.
+* Check what happens if the search answers 2 rows of data, like a movie and his HD counterpart. Im guessing nothing happens,
+  it tries to post the links again but the bot check that he has commented already so it ignores it.
