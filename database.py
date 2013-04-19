@@ -31,10 +31,11 @@ Version = 0.2
 import praw
 import sqlite3
 import logging
+import config
 
 
 # logging parameters below
-logging.basicConfig(filename='database.log',level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
+logging.basicConfig(filename=config.path + 'database.log',level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 logging.info("Program Start")
 
 user_agent = ("pymoviebot 0.1 by /u/itxaka")  # API guidelines enforce this
