@@ -25,7 +25,7 @@ Version = 0.2
 
 # DONE! Add logging so it can provide feedback
 # DONE! Put it in a loop so it runs indefinitly? Not sure if we want that and a time.sleep() or we rather launch it every X minutes like with cron
-# TODO: Try/except in case reddit is down
+# DONE! Try/except in case reddit is down
 # TODO: Check what happens if I get back 2 results when searching for a movie. Maybe I get a normal and HD version and all hell breaks loose?
 
 
