@@ -21,8 +21,6 @@ Copyrigth 2013 Itxaka Serrano <itxakaserrano@gmail.com>
 This code works in conjuntion with database.py
 """
 
-Version = 0.2
-
 # DONE! Add logging so it can provide feedback
 # DONE! Put it in a loop so it runs indefinitly? Not sure if we want that and a time.sleep() or we rather launch it every X minutes like with cron
 # DONE! Try/except in case reddit is down
@@ -40,7 +38,7 @@ import config
 logging.basicConfig(filename=config.path + 'pymoviebot.log',level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 logging.info("Program Start")
 
-user_agent = ("pymoviebot 0.1 by /u/itxaka") # API guidelines suggest this
+user_agent = ("pymoviebot 0.3 by /u/itxaka") # API guidelines suggest this
 already_done = []  # the ones we have submitted the comment to go here
 
 while True:
@@ -57,7 +55,7 @@ while True:
     subreddit = r.get_subreddit('fullmovierequest')
 
     try:
-        for submission in subreddit.get_new(limit=10):  # we get 10 at a time. It would be strange to have mora than 10 new submissions every 5 minutes
+        for submission in subreddit.get_new(limit=500):  # we get all we can
             if submission.id in already_done:  # first check to see if we added it to the done list
                 pass
             else:
@@ -92,6 +90,8 @@ while True:
         logging.error("We got an http error: " + str(e))
     c.close()  # close cursor
     db.close()  # close db
+    logging.info("One round completed, starting agian in 5 minutes.")
     time.sleep(300)  # We sleep for 5 minutes before checking again, I believe new submissions arent provided until 30 seconds after being posted
+    logging.info("There we go again.")
 
 logging.info("Program End")

@@ -45,27 +45,23 @@ r = praw.Reddit(user_agent=user_agent)
 
 db = sqlite3.connect("data.sql")
 c = db.cursor()
-c.execute("Create table if not exists movie(id text UNIQUE, name text, url text, author text, reddit_url text, subreddit text)")
+c.execute("Create table if not exists movie(id text UNIQUE, name text, url text, author text, reddit_url text, subreddit text, status text)")
 
-subreddit = r.get_subreddit('fullmoviesonvimeo')
-for submission in subreddit.get_new(limit=1000):
-    c.execute('SELECT * FROM movie where id=?', (submission.id,))
-    if c.fetchone():  # check if the id is already in the database
-        count += 1  # if it was, add one so we can check the db at the end
-    else:
-        # use str() for the author as it won't work any other way
-        c.execute('INSERT INTO movie VALUES(?,?,?,?,?,?)', (submission.id,submission.title, submission.url, str(submission.author), submission.permalink, "fullmoviesonvimeo"))
-        db.commit()
 
-subreddit = r.get_subreddit('fullmoviesonyoutube')
-for submission in subreddit.get_new(limit=1000):
-    c.execute('SELECT * FROM movie where id=?', (submission.id,))
-    if c.fetchone(): # check if the id is already in the database
-        count += 1  # if it was, add one so we can check the db at the end
-    else:
-        # use str() for the author as it won't work any other way
-        c.execute('INSERT INTO movie VALUES(?,?,?,?,?,?)', (submission.id,submission.title, submission.url, str(submission.author), submission.permalink, "fullmoviesonyoutube"))
-        db.commit()
+def updateDb(reddit):
+    global count
+    subreddit = r.get_subreddit(reddit)
+    for submission in subreddit.get_new(limit=1000):
+        c.execute('SELECT * FROM movie where id=?', (submission.id,))
+        if c.fetchone():  # check if the id is already in the database
+            count += 1  # if it was, add one so we can check the db at the end
+        else:
+            # use str() for the author as it won't work any other way
+            c.execute('INSERT INTO movie VALUES(?,?,?,?,?,?,?)', (submission.id,submission.title, submission.url, str(submission.author), submission.permalink, "fullmoviesonvimeo", "ok"))
+            db.commit()
+
+updateDb("fullmoviesonvimeo")
+updateDb("fullmoviesonyoutube")
 
 # we will execute a little check in order to see if we found new items
 c.execute("SELECT COUNT(*) FROM movie")
