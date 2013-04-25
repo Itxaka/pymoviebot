@@ -53,9 +53,19 @@ while True:
     db = sqlite3.connect("data.sql")
     c = db.cursor()
     subreddit = r.get_subreddit('fullmovierequest')
-
     try:
         for submission in subreddit.get_new(limit=500):  # we get all we can
+            try:
+                flat_comments = praw.helpers.flatten_tree(submission.comments)  # flat everything
+                for comment in flat_comments:
+                    if "pymoviebot" in str(comment.author):
+                        if "moderator" in str(comment.distinguished):
+                            pass
+                        else:
+                            logging.info("Comment distinguished")
+                            comment.distinguish()
+            except:
+                pass
             if submission.id in already_done:  # first check to see if we added it to the done list
                 pass
             else:
@@ -77,7 +87,7 @@ while True:
                                 submission_to_flair = r.get_submission(submission_id=submission.id)
                                 if row[5] == "fullmoviesonvimeo":
                                     subreddit.set_flair(submission_to_flair,"View on Vimeo", "vimeo")
-                                    logging.info("Flair Vimeo set for: " + str(submission.title))
+                                    logging.info("Flair Vimeo set for: " + str(unicode(submission.title)))
                                 else:
                                     subreddit.set_flair(submission_to_flair,"View on YouTube", "youtube")
                                     logging.info("Flair Youtube set for: " + str(submission.title))
