@@ -16,7 +16,7 @@ Copyrigth 2013 - Itxaka Serrano Garcia <itxakaserrano@gmail.com>
 
 
 
-pymoviebot.py
+pymoviebot-2.py
 --------------
 
 pymoviebot is a bot for reddit. It will keep checking the subreddit /r/fullmovierequest for movie requests. 
@@ -32,7 +32,7 @@ reddit url and post author is stored.
 The sqlite database provides us with a quick and small response for any query we do, much better than searching
 both subreddits everytime there is a new request.
 
-pymoviebot.py will check the request subreddit every 5 minutes and get the 10 newests post. Then it will check if they 
+pymoviebot-2.py will check the request subreddit and get all the posts. Then it will check if they 
 are already fulfilled and commented by itself and if not, check and post if there is any coincidence in the database.
 
 It will also flair the post automatically with the proper flair.
