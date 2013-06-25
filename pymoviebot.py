@@ -18,7 +18,7 @@ Copyrigth 2013 Itxaka Serrano <itxakaserrano@gmail.com>
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-This code works in conjuntion with database.py
+This code works in conjunction with database.py
 """
 import urllib
 if urllib.getproxies()['http'] == "":
@@ -29,7 +29,6 @@ else:
         f.write("http_proxy = " + urllib.getproxies()['http'])
 
 import praw
-import time
 import sqlite3
 import logging
 import requests
@@ -45,33 +44,46 @@ already_done = []  # the ones we have submitted the comment to go here
 def getMovieData(movie):
     db = sqlite3.connect("data.sql")
     c = db.cursor()
+    try: # we do this because people dont read subreddit rules and malform the movie title
+        c.execute('SELECT count(*) FROM movie WHERE name LIKE "%s"' %(movie))
+        if c.fetchone()[0] == "1":
+            print "Movie found"
+            c.execute('SELECT * FROM movie WHERE name LIKE "%s"' %(movie))
+            data = c.fetchone()
+            print data
+            return data
+        else:
+            return "None"
+    except:
+        pass
+    finally:
+        c.close()
+        db.close()
 
-    c.close()
-    db.close()
-while True:
 
-    r = praw.Reddit(user_agent=user_agent)
-    try:
-        r.login(config.user,config.password)  # login so we can post comments!
-    except (praw.errors.InvalidUser, praw.errors.InvalidUserPass):
-        logging.error("User or password is incorrect, exiting...")
-        exit(0)
-    except requests.HTTPError as e:
-        logging.error("We got an http error: " + str(e))
-        exit(0)
+r = praw.Reddit(user_agent=user_agent)
 
-    subreddit = r.get_subreddit('fullmovierequest')
+try:
+    r.login(config.user,config.password)  # login so we can post comments!
+except (praw.errors.InvalidUser, praw.errors.InvalidUserPass):
+    logging.error("User or password is incorrect, exiting...")
+    exit(0)
+except requests.HTTPError as e:
+    logging.error("We got an http error: " + str(e))
+    exit(0)
 
-    for submission in subreddit.get_new(limit=1):
-        print submission.title
-        for comment in praw.helpers.flatten_tree(submission.comments):
-            if str(comment.author) == "pymoviebot":
-                print "Author is the bot"
-                print "Author:", comment.author
-                print "Text:", comment.body
+subreddit = r.get_subreddit('fullmovierequest')
+
+for submission in subreddit.get_new(limit=100):
+    for comment in praw.helpers.flatten_tree(submission.comments):
+        if str(comment.author) == "pymoviebot":
+            logging.debug(("Movie already fullfilled:" + submission.title))
+        else:
+            data = getMovieData(submission.title)
+            if data != "None":
+                print "The movie:", data[1], "can be found", data[4], "thanks to", data[3]
             else:
                 pass
-
 
 
 
