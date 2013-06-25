@@ -31,7 +31,7 @@ else:
     with open("praw.ini", "w") as f:
         f.write("[reddit]\n")
         f.write("http_proxy = " + urllib.getproxies()['http'])
-    
+
 import praw
 import sqlite3
 import logging
